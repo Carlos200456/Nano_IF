@@ -181,7 +181,7 @@ void setup() {
   Timer2.EnableTimerInterrupt(Xray, 1000);                            // Interrupt every 1 milliseconds cuando hay que controlar los pulsos
   if (TipoIF == 3){
     digitalWrite(FocoFino, HIGH);
-    delay(500);
+    delay(1000);
     digitalWrite(FocoFino, LOW);
   }
 }
