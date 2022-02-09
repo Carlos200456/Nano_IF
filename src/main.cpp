@@ -137,14 +137,15 @@ void setup() {
   if (TipoIF == 3){
     u8x8.setCursor(0,3);           // Column, Row
     u8x8.print("BH 5000");
-  }  u8x8.setCursor(0,4);             // Column, Row
+  }
+  u8x8.setCursor(0,4);             // Column, Row
   u8x8.print("Version 2.222");     // SOFTWARE VERSION ---------------------------<<<<<<<<<<<<<<<<
   delay(2000);
   u8x8.clearDisplay();
   #endif
 
   if (TipoIF == 1){
-    debounceDelaySC = 50;    // the debounce time; increase if the output flickers
+    debounceDelaySC = 50;     // the debounce time; increase if the output flickers
     debounceDelayCI = 500;    // the debounce time; increase if the output flickers
   }
 
@@ -178,6 +179,11 @@ void setup() {
 
   outputAEC = map(0, 0, 255, AEC_Limit_DW, AEC_Limit_UP);             // Valor de arranque del AEC Problemas con Philips es necesario que arranque de abajo
   Timer2.EnableTimerInterrupt(Xray, 1000);                            // Interrupt every 1 milliseconds cuando hay que controlar los pulsos
+  if (TipoIF == 3){
+    digitalWrite(FocoFino, HIGH);
+    delay(500);
+    digitalWrite(FocoFino, LOW);
+  }
 }
 
 
