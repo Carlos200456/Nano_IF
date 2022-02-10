@@ -198,7 +198,7 @@ void Xray(void){
           digitalWrite (XRay, HIGH);
         }
       }
-      if ((TipoIF == 3) && (count == 2)) digitalWrite (T1, LOW);
+      if ((TipoIF == 3) && (count == 2)) digitalWrite (T1, LOW);   // Control de la señal de ABC en BH 5000
       count++;
       if (count > XRayTime ) {
         digitalWrite (XRay, LOW);
@@ -653,7 +653,7 @@ void loop() {
         PulsoExtra(); 
       }else {
         if (buttonStateCI){
-          if (TipoIF == 3) KVSTActive = 100;                        // Demora para habilitar RQ_SN_X en BH 5000 en Fluoroscopia
+          if (TipoIF == 3) KVSTActive = 500;                        // Demora para habilitar RQ_SN_X en BH 5000 en Fluoroscopia
           Serial.println("FluoroOn");
           #ifdef OLED
           u8x8.clearLine(0);
@@ -694,7 +694,7 @@ void loop() {
         PulsoExtra();
       }else {
         if (buttonStateSC){
-          if (TipoIF == 3) KVSTActive = 800;                        // Demora para habilitar RQ_SN_X en BH 5000 en Cine
+          if (TipoIF == 3) KVSTActive = 1000;                        // Demora para habilitar RQ_SN_X en BH 5000 en Cine
           Serial.println("CineOn");
           #ifdef OLED
           u8x8.clearLine(0);
