@@ -624,7 +624,7 @@ void loop() {
 
   if (TipoIF != 1){
     if ((TipoIF == 3) && (XRayPeriod > 200)) analogWrite(AEC, 10); else analogWrite(AEC, char(outputAEC));
-    // AEC_Analod_Read = analogRead(AEC_Analog);
+    // AEC_Analod_Read = analogRead(AEC_Analog);  // Ahora Lee en la interupcion de XRay por el corte de AEC
     AEC_Voltage = float ((AEC_Analod_Read - Offset) / Gain);
     #ifdef OLED
     u8x8.setCursor(0,2);   // Column, Row
