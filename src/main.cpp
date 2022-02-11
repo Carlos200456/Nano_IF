@@ -82,6 +82,7 @@ bool AEC_Lock = false;
 unsigned char AEC_Lock_Qy = 0;
 bool Pulse_State = false;
 bool Last_Pulse_State = false;
+bool debugbool = false;
 
 
 char SCin = 0;
@@ -139,7 +140,7 @@ void setup() {
     u8x8.print("BH 5000");
   }
   u8x8.setCursor(0,4);             // Column, Row
-  u8x8.print("Version 2.222");     // SOFTWARE VERSION ---------------------------<<<<<<<<<<<<<<<<
+  u8x8.print("Version 4.Git");     // SOFTWARE VERSION ---------------------------<<<<<<<<<<<<<<<<
   delay(2000);
   u8x8.clearDisplay();
   #endif
@@ -190,8 +191,8 @@ void setup() {
 // ------------------ Interupt for Pulse Generation -----------------------------------------
 void Xray(void){
   if ((!buttonStateSC || !buttonStateCI) && XRayOn) {        // Demora para empesar a pulsar en Fluoro รณ Cine
-    if (TipoIF == 1){
-        digitalWrite (XRay, !digitalRead(PulseIn));   // Repetir el pulso del Generador Invertido para la Camara
+    if (TipoIF == 1){                                 // Integris 3000
+        digitalWrite (XRay, !digitalRead(PulseIn));   // Repetir el pulso del Generador Invertido para la Camara 
     } else {
       if (!KVSTActive) {
         if (count == 0) {
@@ -218,9 +219,10 @@ void Xray(void){
 
 
 void loop() {
-  // print the string when a newline arrives:
+  debugbool = !digitalRead(DEBUG);
+  if (debugbool) digitalWrite (T1, LOW);  // Anula la restriccion de ABC en DEBUG para poder calibrar
+  // Read the string when a newline arrives:
   if (DataReady) {
-    // IrisActive = 100;      // Activar el servo del iris por 100ms. con cada comando para verificar posicion
     Tipo = inputString.substring(0,1);
     Signo = inputString.substring(1,2);
     Magnitud = inputString.substring(2);
@@ -344,7 +346,7 @@ void loop() {
       goto jmp;
     }
 
-    if ((Tipo == "C")&&(!digitalRead(DEBUG))){     // Command for Iris Calibration
+    if ((Tipo == "C")&&(debugbool)){     // Command for Iris Calibration
       if (Signo == "U"){
         IrisServo += 1;
         Serial.print(IrisServo);
@@ -358,7 +360,7 @@ void loop() {
       goto jmp;
     }
 
-    if ((Tipo == "B")&&(!digitalRead(DEBUG))){    // Command for AEC Calibration
+    if ((Tipo == "B")&&(debugbool)){    // Command for AEC Calibration
       if (Signo == "U"){
         AEC_Limit_In += Magnitud.toInt();
       }
@@ -370,7 +372,7 @@ void loop() {
       goto jmp;
     }
 
-    if ((Tipo == "W")&&(!digitalRead(DEBUG))){         // -------------------- Servo Iris Limits Calibration --------------------
+    if ((Tipo == "W")&&(debugbool)){         // -------------------- Servo Iris Limits Calibration --------------------
       if (Signo == "U") {
         WriteEEPROM(0, IrisServo);
         delay(50);
@@ -384,7 +386,7 @@ void loop() {
       goto jmp;
     }
 
-    if ((Tipo == "T")&&(!digitalRead(DEBUG))){         // -------------------- Interface Mode Program --------------------
+    if ((Tipo == "T")&&(debugbool)){         // -------------------- Interface Mode Program --------------------
       if (Signo == "T") WriteEEPROM(4, 2);             // Toshiba ==> T0 y T1 suben y bajan los KV en Cine, PulseIn KV button state
       if (Signo == "I") WriteEEPROM(4, 1);             // Integris 3000 el pulso de Rayos X es externo
       if (Signo == "N") WriteEEPROM(4, 0);             // Interface Normal Meditech
@@ -430,7 +432,7 @@ void loop() {
       goto jmp;
     }
 
-    if ((Tipo == "V")&&(!digitalRead(DEBUG))){      // -------------------- Offset y Gain Voltimeter --------------------
+    if ((Tipo == "V")&&(debugbool)){      // -------------------- Offset y Gain Voltimeter --------------------
       if (Signo == "O") WriteEEPROM(7, Magnitud.toInt());
       if (Signo == "G") WriteEEPROM(8, Magnitud.toInt());
       delay(50);
@@ -442,7 +444,7 @@ void loop() {
 
 
 
-    if ((Tipo == "Z")&&(!digitalRead(DEBUG))){                   // Command to Write AEC Calibration
+    if ((Tipo == "Z")&&(debugbool)){                   // Command to Write AEC Calibration
       if (Signo == "U") {
         WriteEEPROM(2, AEC_Limit_In);
         delay(50);
@@ -456,7 +458,7 @@ void loop() {
       goto jmp;
     }
     
-    if ((Tipo == "X")&&(!digitalRead(DEBUG))){                   // Command to Write AEC Calibration
+    if ((Tipo == "X")&&(debugbool)){                   // Command to Write AEC Calibration
       if (Signo == "U") {
         WriteEEPROM(5, AEC_Limit_In);
         delay(50);
@@ -470,7 +472,7 @@ void loop() {
       goto jmp;
     }
 
-    if ((Tipo == "K")&&(!digitalRead(DEBUG))){                   // Command to Write AEC Lock Calibration
+    if ((Tipo == "K")&&(debugbool)){                   // Command to Write AEC Lock Calibration
       if (Signo == "L") {
         WriteEEPROM(9, AEC_Limit_In);
         delay(50);
@@ -493,7 +495,7 @@ void loop() {
     
     jmp:
     
-    if (!digitalRead(DEBUG)){
+    if (debugbool){
       Serial.print("RX: ");
       Serial.print(inputString);
       Serial.print("Tipo: ");
@@ -562,7 +564,7 @@ void loop() {
   Servo_to_Pos(IrisServo);      //command to rotate the servo to the specified IrisServo angle
 
   #ifdef OLED
-  if (!digitalRead(DEBUG)){
+  if (debugbool){
     u8x8.setCursor(15,4);   // Column, Row
     u8x8.print("D");
   } else {
@@ -571,7 +573,7 @@ void loop() {
   }
   #endif
 
-  if (!digitalRead(DEBUG)) {
+  if (debugbool) {
     outputAEC = AEC_Limit_In;
   } else {
     if (!buttonStateCI) outputAEC = map(inputAEC, 0, 255, AEC_Limit_DW_Cine, AEC_Limit_UP_Cine); else outputAEC = map(inputAEC, 0, 255, AEC_Limit_DW, AEC_Limit_UP);
