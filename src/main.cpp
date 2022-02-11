@@ -623,7 +623,7 @@ void loop() {
   }
 
   if (TipoIF != 1){
-    analogWrite(AEC, char(outputAEC));
+    if ((TipoIF == 3) && (XRayPeriod > 200)) analogWrite(AEC, 10); else analogWrite(AEC, char(outputAEC));
     // AEC_Analod_Read = analogRead(AEC_Analog);
     AEC_Voltage = float ((AEC_Analod_Read - Offset) / Gain);
     #ifdef OLED
