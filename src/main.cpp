@@ -205,7 +205,7 @@ void Xray(void){
         digitalWrite (XRay, LOW);
       }
       if ((TipoIF == 3) && (count > (XRayTime + 10))) digitalWrite (T1, HIGH);
-
+      if (count == 5) AEC_Analod_Read = analogRead(AEC_Analog);
       if (count >= XRayPeriod) count = 0;
     } 
   } else {
@@ -220,7 +220,10 @@ void Xray(void){
 
 void loop() {
   debugbool = !digitalRead(DEBUG);
-  if (debugbool) digitalWrite (T1, LOW);  // Anula la restriccion de ABC en DEBUG para poder calibrar
+  if (debugbool) {
+    digitalWrite (T1, LOW);                   // Anula la restriccion de ABC en DEBUG para poder calibrar
+    AEC_Analod_Read = analogRead(AEC_Analog); // Lee el valor de ABC en DEBUG para poder calibrar
+  } 
   // Read the string when a newline arrives:
   if (DataReady) {
     Tipo = inputString.substring(0,1);
@@ -621,7 +624,7 @@ void loop() {
 
   if (TipoIF != 1){
     analogWrite(AEC, char(outputAEC));
-    AEC_Analod_Read = analogRead(AEC_Analog);
+    // AEC_Analod_Read = analogRead(AEC_Analog);
     AEC_Voltage = float ((AEC_Analod_Read - Offset) / Gain);
     #ifdef OLED
     u8x8.setCursor(0,2);   // Column, Row
