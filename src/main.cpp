@@ -76,6 +76,7 @@ int TT_AEC_Limit_Hi = 160;
 unsigned int count = 0;
 unsigned int XRayPeriod = 80;
 unsigned int XRayTime = 20;
+unsigned int SuperPulso = 0;
 bool XRayOn = 0;              // Start time of X-Ray
 bool NoPaso = true;
 bool AEC_Lock = false;
@@ -180,17 +181,18 @@ void setup() {
 
   outputAEC = map(0, 0, 255, AEC_Limit_DW, AEC_Limit_UP);             // Valor de arranque del AEC Problemas con Philips es necesario que arranque de abajo
   Timer2.EnableTimerInterrupt(Xray, 1000);                            // Interrupt every 1 milliseconds cuando hay que controlar los pulsos
-  if (TipoIF == 3){
+  if (TipoIF == 3){                       // Reset BH-5000 y IDITV
     digitalWrite(FocoFino, HIGH);
     delay(1000);
     digitalWrite(FocoFino, LOW);
   }
+  debugbool = !digitalRead(DEBUG);
 }
 
 
 // ------------------ Interupt for Pulse Generation -----------------------------------------
 void Xray(void){
-  if ((!buttonStateSC || !buttonStateCI) && XRayOn) {        // Demora para empesar a pulsar en Fluoro รณ Cine
+  if ((!buttonStateSC || !buttonStateCI) && XRayOn && !debugbool) {        // Demora para empesar a pulsar en Fluoro รณ Cine
     if (TipoIF == 1){                                 // Integris 3000
         digitalWrite (XRay, !digitalRead(PulseIn));   // Repetir el pulso del Generador Invertido para la Camara 
     } else {
@@ -200,12 +202,14 @@ void Xray(void){
         }
       }
       if ((TipoIF == 3) && (count == 2)) digitalWrite (T1, LOW);   // Control de la señal de ABC en BH 5000
+      
       count++;
+      
       if (count > XRayTime ) {
         digitalWrite (XRay, LOW);
       }
       if ((TipoIF == 3) && (count > (XRayTime + 10))) digitalWrite (T1, HIGH);
-      if (count == 5) AEC_Analod_Read = analogRead(AEC_Analog);
+      if (count == 5) AEC_Analod_Read = analogRead(AEC_Analog);     // Lee el Valor de AEC durante el Pulso
       if (count >= XRayPeriod) count = 0;
     } 
   } else {
@@ -215,11 +219,11 @@ void Xray(void){
   if (KVDWActive) KVDWActive -= 1;
   if (KVUPActive) KVUPActive -= 1;
   if (KVSTActive) KVSTActive -= 1;
+  if (SuperPulso) SuperPulso -= 1;
 }
 
 
 void loop() {
-  debugbool = !digitalRead(DEBUG);
   if (debugbool) {
     digitalWrite (T1, LOW);                   // Anula la restriccion de ABC en DEBUG para poder calibrar
     AEC_Analod_Read = analogRead(AEC_Analog); // Lee el valor de ABC en DEBUG para poder calibrar
@@ -337,6 +341,24 @@ void loop() {
       goto jmp;
     }
 
+    if (Tipo == "D"){                     // Activar el Modo Debug
+      if (Signo == "B"){
+        if (Magnitud.toInt() == 0){
+          debugbool = false;
+        } else {
+          debugbool = true;
+        }
+      }
+      goto jmp;
+    }
+
+    if ((Tipo == "R") && (TipoIF == 3) && debugbool){      // Rayos en BH-5000
+      if (Signo == "X"){
+        SuperPulso = Magnitud.toInt();
+      }
+      goto jmp;
+    }
+
     if (Tipo == "S"){                   // Servo Iris value, valid values  0 - 31
       if ((0 <= Magnitud.toInt())&&( Magnitud.toInt() <= 31)){
         IrisServo = Magnitud.toInt();
@@ -443,9 +465,6 @@ void loop() {
       Gain = float ((float) (ReadEEPROM(8)) / 10);
       goto jmp;
     }
-
-
-
 
     if ((Tipo == "Z")&&(debugbool)){                   // Command to Write AEC Calibration
       if (Signo == "U") {
@@ -563,6 +582,24 @@ void loop() {
     inputString = "";
     DataReady = false;
   }
+
+  if (TipoIF == 3){           // BH 5000 Accionamiento Se;al RQ_SN_X con retardo mediante Pin T0 = A0
+    if (debugbool) {          // SuperPulso de Rayos X para Adaptacion BH-5000
+      if (SuperPulso) {
+        digitalWrite (XRay, HIGH);
+        digitalWrite(T0, HIGH);
+      } else {
+        digitalWrite (XRay, LOW);
+        digitalWrite(T0, LOW);
+      } 
+    } else {
+      if ((!buttonStateSC || !buttonStateCI) && !KVSTActive) digitalWrite(T0, HIGH);
+      else {
+      digitalWrite(T0, LOW);
+      }
+    }
+  }
+
 
   Servo_to_Pos(IrisServo);      //command to rotate the servo to the specified IrisServo angle
 
@@ -712,14 +749,6 @@ void loop() {
     }
   }
   lastButtonStateCI = CIin;
-
-  if (TipoIF == 3){                                      // BH 5000 Accionamiento Se;al RQ_SN_X con retardo mediante Pin T0 = A0
-    if ((!buttonStateSC || !buttonStateCI) && !KVSTActive) digitalWrite(T0, HIGH);
-    else {
-      digitalWrite(T0, LOW);
-    }
-  }
-
 
   if ((millis() - Presed) > 250) XRayOn = true;        // Demora para empesar a pulsar en Fluoro รณ Cine
 
