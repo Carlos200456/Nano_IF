@@ -13,7 +13,7 @@ KD
 KU
 LK
 
-RX40 <== RX On for 40ms.
+RX200 <== RX On for 200ms.
 
 S
 TT
