@@ -1,0 +1,69 @@
+Version 2.168
+Un solo pulso extra Post Scopia o Cine.
+Muestra las ultimas Cuatro lineas de comandos de la PC
+
+Version 2.173
+Con numero secuencial de comando y codigo de error.
+
+Version 2.174
+Bug Fix cambio de modo Integris / Normal
+
+Version 2.182
+Permitir solo una entrada a la vez
+Ignorar cuando llega Cine durante Scopia o viseversa.
+
+Version 2.184
+Control de los pulsos de Integris por medio de Interupts para mayos estabilidad
+
+Version 2.191
+Mayor demora en el antirebote y agregado de rutina para Display de 1.3"
+
+Version 2.192
+Debounce Delay de 500ms. para evitar falsos positivos de Escopia y Cine
+
+Version 2.194
+Con Detach del servo para evitar movimientos de vibracion
+
+Version 2.195
+Agregado de Funcion Lock Kv, cuando llega el comando LK1<CR> ajusta el AEC Out a mitad de escala
+Debounce Delay de 500ms. para evitar falsos positivos de Escopia y Cine solo en Integris 3000
+
+Version 2.196
+Modificacion de Funcion Lock Kv, cuando llega el comando LKxx<CR> ajusta el AEC Out a mitad de escala despues de enviar xx Pulsos de RX
+Cuando llega el comando LK00<CR> desabitlita la funcion Lock Kv.
+
+Version 2.197
+Modificacion de Funcion Lock Kv, cuando llega el comando LKxx<CR> ajusta el AEC Out al valor "AEC Lock Volt" despues de enviar xx Pulsos de RX
+Este valor se almacena en EEPROM con el comando KL8<CR>
+
+Version 2.198
+Eliminacion de activacion de Iris durane las comunicaciones.
+
+Version 2.202
+Agregado de Opción para equipo Toshiba "T0", "T1" son Kv Dw, Kv Up.
+
+Version 2.203
+Agregado de Opción para equipo Toshiba "FocoFino" es el Boton KV Manual de la Consola.
+Se activa cuando viene Cine solamente si esta apagado. Detecta el encendido por "PulseIn"
+
+Version 2.204
+Unificacion de versiones en Nano_Interface_2
+
+Version 2.206
+Ordenado del SVN sin cambios en software.
+
+Version 2.207
+En Integris 3000 Accionamiento del pedal de escopia con retardo mediante Optocupler FocoFino = A2 del Nano
+
+Version 2.215
+En Integris 3000 reduccion del retardo del pedal de escopia de 500ms. a 100ms.
+
+Version 2.216
+Control de T0 y T1 para Integris BH-5000
+
+Version 2.219
+Bug Fix (Enable primero y despues pulsos de Rayos X)
+
+Version 4.Git
+Control Completo de Optimus CP en Integris BH-5000 incluyendo:
+AEC, Pulsos Adaptacion y Retardos entre pedales.

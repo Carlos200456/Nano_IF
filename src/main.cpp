@@ -77,6 +77,8 @@ unsigned int count = 0;
 unsigned int XRayPeriod = 80;
 unsigned int XRayTime = 20;
 unsigned int SuperPulso = 0;
+unsigned int InterDelay = 0;
+unsigned int InterDelayDefault = 800;
 bool XRayOn = 0;              // Start time of X-Ray
 bool NoPaso = true;
 bool AEC_Lock = false;
@@ -139,6 +141,7 @@ void setup() {
   if (TipoIF == 3){
     u8x8.setCursor(0,3);           // Column, Row
     u8x8.print("BH 5000");
+    InterDelayDefault = 1000;      // Retardo entre Pedales para evitar cuelgue del Generador
   }
   u8x8.setCursor(0,4);             // Column, Row
   u8x8.print("Version 4.Git");     // SOFTWARE VERSION ---------------------------<<<<<<<<<<<<<<<<
@@ -220,6 +223,7 @@ void Xray(void){
   if (KVUPActive) KVUPActive -= 1;
   if (KVSTActive) KVSTActive -= 1;
   if (SuperPulso) SuperPulso -= 1;
+  if (InterDelay) InterDelay -= 1;
 }
 
 
@@ -671,7 +675,7 @@ void loop() {
     #endif
   }
 // Fluoro Input ------------------------------
-  SCin = digitalRead(Scopia);
+  if (!InterDelay) SCin = digitalRead(Scopia);
   if (SCin != lastButtonStateSC) {
     // reset the debouncing timer
     lastDebounceTimeSC = millis();
@@ -693,6 +697,7 @@ void loop() {
         u8x8.draw1x2String(0,0,"FluoroOff");
         #endif
         PulsoExtra(); 
+        InterDelay = InterDelayDefault;
       }else {
         if (buttonStateCI){
           if (TipoIF == 3) KVSTActive = 500;                        // Demora para habilitar RQ_SN_X en BH 5000 en Fluoroscopia
@@ -712,7 +717,7 @@ void loop() {
 
   
 // Cine Input ------------------------------
-  CIin = digitalRead(Cine);
+  if (!InterDelay) CIin = digitalRead(Cine);
   if (CIin != lastButtonStateCI) {
     // reset the debouncing timer
     lastDebounceTimeCI = millis();
@@ -734,6 +739,7 @@ void loop() {
         u8x8.draw1x2String(0,0,"CineOff");
         #endif
         PulsoExtra();
+        InterDelay = InterDelayDefault;
       }else {
         if (buttonStateSC){
           if (TipoIF == 3) KVSTActive = 1000;                        // Demora para habilitar RQ_SN_X en BH 5000 en Cine
