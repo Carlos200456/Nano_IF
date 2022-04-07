@@ -1,0 +1,31 @@
+A
+BU
+BD
+CU
+CD
+
+DB1 <== Debug On
+DB0 <== Debug Off
+
+IU
+KL
+KD
+KU
+LK
+
+RX200 <== RX On for 200ms.
+
+S
+TT
+TI
+TN
+TB
+VO
+VG
+WU
+WD
+XU
+XD
+YU
+ZU
+ZD
