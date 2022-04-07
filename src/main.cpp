@@ -75,7 +75,7 @@ int TT_AEC_Limit_Hi = 160;
 
 unsigned int count = 0;
 unsigned int XRayPeriod = 80;
-unsigned int XRayTime = 20;
+unsigned int XRayTime = 10;
 unsigned int SuperPulso = 0;
 unsigned int InterDelay = 0;
 unsigned int InterDelayDefault = 800;
@@ -204,14 +204,14 @@ void Xray(void){
           digitalWrite (XRay, HIGH);
         }
       }
-      if ((TipoIF == 3) && (count == 2)) digitalWrite (T1, LOW);   // Control de la señal de ABC en BH 5000
+      // if ((TipoIF == 3) && (count == 2)) digitalWrite (T1, LOW);   // Control de la señal de ABC en BH 5000
       
       count++;
       
       if (count > XRayTime ) {
         digitalWrite (XRay, LOW);
       }
-      if ((TipoIF == 3) && (count > (XRayTime + 10))) digitalWrite (T1, HIGH);
+      // if ((TipoIF == 3) && (count > (XRayTime + 10))) digitalWrite (T1, HIGH);
       if (count == 5) AEC_Analod_Read = analogRead(AEC_Analog);     // Lee el Valor de AEC durante el Pulso
       if (count >= XRayPeriod) count = 0;
     } 
@@ -229,7 +229,7 @@ void Xray(void){
 
 void loop() {
   if (debugbool) {
-    digitalWrite (T1, LOW);                   // Anula la restriccion de ABC en DEBUG para poder calibrar
+    // digitalWrite (T1, LOW);                   // Anula la restriccion de ABC en DEBUG para poder calibrar
     AEC_Analod_Read = analogRead(AEC_Analog); // Lee el valor de ABC en DEBUG para poder calibrar
   } 
   // Read the string when a newline arrives:
@@ -320,6 +320,9 @@ void loop() {
             digitalWrite(T1, LOW);
             digitalWrite(FocoFino, LOW);
         }
+      }
+      if(TipoIF == 3){             // Interface BH-5000
+        if(XRayTime < 11) digitalWrite(T1, HIGH); else digitalWrite(T1, LOW);
       }
       goto jmp;
     }
