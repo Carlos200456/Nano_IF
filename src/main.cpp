@@ -40,9 +40,9 @@
 
 #ifdef OLED
 // OLED 0.96"
-// U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8(/* reset=*/ U8X8_PIN_NONE);
+U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8(/* reset=*/ U8X8_PIN_NONE);
 // OLED 1.3"
-U8X8_SH1106_128X64_NONAME_HW_I2C u8x8(/* reset=*/ U8X8_PIN_NONE);
+// U8X8_SH1106_128X64_NONAME_HW_I2C u8x8(/* reset=*/ U8X8_PIN_NONE);
 #endif
 
 String inputString = "";               // a string to hold incoming data
@@ -78,7 +78,7 @@ unsigned int XRayPeriod = 80;
 unsigned int XRayTime = 10;
 unsigned int SuperPulso = 0;
 unsigned int InterDelay = 0;
-unsigned int InterDelayDefault = 800;
+unsigned int InterDelayDefault = 1000;
 bool XRayOn = 0;              // Start time of X-Ray
 bool NoPaso = true;
 bool AEC_Lock = false;
@@ -141,7 +141,7 @@ void setup() {
   if (TipoIF == 3){
     u8x8.setCursor(0,3);           // Column, Row
     u8x8.print("BH 5000");
-    InterDelayDefault = 1000;      // Retardo entre Pedales para evitar cuelgue del Generador
+    InterDelayDefault = 2000;      // Retardo entre Pedales para evitar cuelgue del Generador
   }
   u8x8.setCursor(0,4);             // Column, Row
   u8x8.print("Version 4.Git");     // SOFTWARE VERSION ---------------------------<<<<<<<<<<<<<<<<
