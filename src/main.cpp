@@ -763,7 +763,7 @@ void loop() {
 
 // Mag Input ------------------------------
   #ifdef MAGNY
-  Magin = digitalRead(Mag);
+  Magin = digitalRead(PulseIn);
   if (Magin != lastButtonStateMag) {
     // reset the debouncing timer
     lastDebounceTimeMag = millis();
