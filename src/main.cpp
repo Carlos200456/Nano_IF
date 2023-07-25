@@ -322,7 +322,7 @@ void loop() {
         }
       }
       if(TipoIF == 3){             // Interface BH-5000
-        if(XRayTime < 11) digitalWrite(T1, HIGH); else digitalWrite(T1, LOW);
+        if(XRayTime > 20) digitalWrite(T1, HIGH); else digitalWrite(T1, LOW);
       }
       goto jmp;
     }
