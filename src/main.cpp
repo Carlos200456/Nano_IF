@@ -321,8 +321,8 @@ void loop() {
             digitalWrite(FocoFino, LOW);
         }
       }
-      if(TipoIF == 3){             // Interface BH-5000
-        if(XRayTime > 20) digitalWrite(T1, HIGH); else digitalWrite(T1, LOW);
+      if(TipoIF == 3){             // Interface BH-5000 Hi / Low Gain II
+        if(XRayTime > 20) digitalWrite(T1, LOW); else digitalWrite(T1, HIGH);
       }
       goto jmp;
     }
