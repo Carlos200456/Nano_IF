@@ -201,7 +201,7 @@ void Xray(void){
     } else {
       if (!KVSTActive) {
         if (count == 0) {
-          digitalWrite (XRay, HIGH);
+          if (!InterDelay) digitalWrite (XRay, HIGH);  // No entrega pulsos hasta que no se cumpla el InterDelay
         }
       }
       // if ((TipoIF == 3) && (count == 2)) digitalWrite (T1, LOW);   // Control de la señal de ABC en BH 5000
@@ -703,7 +703,7 @@ void loop() {
         InterDelay = InterDelayDefault;
       }else {
         if (buttonStateCI){
-          if (TipoIF == 3) KVSTActive = 500;                        // Demora para habilitar RQ_SN_X en BH 5000 en Fluoroscopia
+          if (TipoIF == 3) KVSTActive = 200;                        // Demora para habilitar RQ_SN_X en BH 5000 en Fluoroscopia
           Serial.println("FluoroOn");
           #ifdef OLED
           u8x8.clearLine(0);
