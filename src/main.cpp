@@ -201,7 +201,7 @@ void Xray(void){
     } else {
       if (!KVSTActive) {
         if (count == 0) {
-          if (!InterDelay) digitalWrite (XRay, HIGH);  // No entrega pulsos hasta que no se cumpla el InterDelay
+          digitalWrite (XRay, HIGH);  // Pulso X-Ray On
         }
       }
       // if ((TipoIF == 3) && (count == 2)) digitalWrite (T1, LOW);   // Control de la señal de ABC en BH 5000
@@ -209,7 +209,7 @@ void Xray(void){
       count++;
       
       if (count > XRayTime ) {
-        digitalWrite (XRay, LOW);
+        digitalWrite (XRay, LOW);  // Pulso X-Ray Off
       }
       // if ((TipoIF == 3) && (count > (XRayTime + 10))) digitalWrite (T1, HIGH);
       if (count == 5) AEC_Analod_Read = analogRead(AEC_Analog);     // Lee el Valor de AEC durante el Pulso
