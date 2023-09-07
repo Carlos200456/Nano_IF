@@ -78,7 +78,7 @@ unsigned int XRayPeriod = 80;
 unsigned int XRayTime = 10;
 unsigned int SuperPulso = 0;
 unsigned int InterDelay = 0;
-unsigned int InterDelayDefault = 800;
+unsigned int InterDelayDefault = 1000;
 bool XRayOn = 0;              // Start time of X-Ray
 bool NoPaso = true;
 bool AEC_Lock = false;
@@ -141,7 +141,7 @@ void setup() {
   if (TipoIF == 3){
     u8x8.setCursor(0,3);           // Column, Row
     u8x8.print("BH 5000");
-    InterDelayDefault = 1000;      // Retardo entre Pedales para evitar cuelgue del Generador
+    InterDelayDefault = 2000;      // Retardo entre Pedales para evitar cuelgue del Generador
   }
   u8x8.setCursor(0,4);             // Column, Row
   u8x8.print("Version 4.Git");     // SOFTWARE VERSION ---------------------------<<<<<<<<<<<<<<<<
@@ -321,8 +321,8 @@ void loop() {
             digitalWrite(FocoFino, LOW);
         }
       }
-      if(TipoIF == 3){             // Interface BH-5000
-        if(XRayTime < 11) digitalWrite(T1, HIGH); else digitalWrite(T1, LOW);
+      if(TipoIF == 3){             // Interface BH-5000 Hi / Low Gain II
+        if(XRayTime > 20) digitalWrite(T1, LOW); else digitalWrite(T1, HIGH);
       }
       goto jmp;
     }
@@ -533,36 +533,52 @@ void loop() {
       Serial.print(Signo);
       Serial.print(" ,Magnitud: ");
       Serial.println(Magnitud);
+      delay(20);
       Serial.print("IF Tipo: ");
       Serial.println(TipoIF, DEC);
+      delay(20);
       Serial.print("AEC Limit: ");
       Serial.println(AEC_Limit_In, DEC);
+      delay(20);
       Serial.print("AEC Limit UP: ");
       Serial.println(AEC_Limit_UP, DEC);
+      delay(20);
       Serial.print("AEC Limit DW: ");
       Serial.println(AEC_Limit_DW, DEC);
+      delay(20);
       Serial.print("AEC Limit UP Cine: ");
       Serial.println(AEC_Limit_UP_Cine, DEC);
+      delay(20);
       Serial.print("AEC Limit DW Cine: ");
       Serial.println(AEC_Limit_DW_Cine, DEC);
+      delay(20);
       Serial.print("AEC Lock Volt: ");
       Serial.println(AEC_Lock_Volt, DEC);
+      delay(20);
       Serial.print("T1 Limit Low(Subir): ");
       Serial.println(TT_AEC_Limit_Low, DEC);
+      delay(20);
       Serial.print("T0 Limit Hi(Bajar): ");
       Serial.println(TT_AEC_Limit_Hi, DEC);
+      delay(20);
       Serial.print("Servo Iris: ");
       Serial.println(IrisServo, DEC);
+      delay(20);
       Serial.print("Servo Limit Up: ");
       Serial.println(LimUp, DEC);
+      delay(20);
       Serial.print("Servo Limit Dn: ");
       Serial.println(LimDn, DEC);
+      delay(20);
       Serial.print("Int Time: ");
       Serial.println(XRayTime, DEC);
+      delay(20);
       Serial.print("Period: ");
       Serial.println(XRayPeriod, DEC);
+      delay(20);
       Serial.print("Offset: ");
       Serial.println(Offset, DEC);
+      delay(20);
       Serial.print("Gain: ");
       Serial.println(Gain, 2);
     }
@@ -763,7 +779,7 @@ void loop() {
 
 // Mag Input ------------------------------
   #ifdef MAGNY
-  Magin = digitalRead(Mag);
+  Magin = digitalRead(PulseIn);
   if (Magin != lastButtonStateMag) {
     // reset the debouncing timer
     lastDebounceTimeMag = millis();
