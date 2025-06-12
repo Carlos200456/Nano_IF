@@ -13,7 +13,6 @@
 #include <EEPROM.h>
 #include <Servo.h>
 #include <Wire.h>
-#include <U8g2lib.h>
 #include "..\lib\TimerTwo.h"
 #include "..\lib\TimerTwo.cpp"
 #include "Functions.h"
@@ -39,6 +38,7 @@
 #define AEC_Analog A6
 
 #ifdef OLED
+#include <U8g2lib.h>
 // OLED 0.96"
 // U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8(/* reset=*/ U8X8_PIN_NONE);
 // OLED 1.3"
@@ -117,7 +117,7 @@ Servo servo_iris;                       //initialize a servo object for the conn
 
 void setup() {
   // initialize serial:
-  Serial.begin(57600);
+  Serial.begin(57600);  // Serial.begin(57600);
   // reserve 20 bytes for the inputString:
   inputString.reserve(20);
   TipoIF = ReadEEPROM(4);             // TipoIF = 0 ==> Normal, TipoIF = 1 ==> Integris 3000, TipoIF = 2 ==> Toshiba, TipoIF = 3 ==> BH 5000
@@ -211,9 +211,7 @@ void Xray(void){
       if (count > XRayTime ) {
         digitalWrite (XRay, LOW);  // Pulso X-Ray Off
         // Inform by Serial port to SerialSplitter X-Ray done without stop interupt
-        if (TipoIF == 4) Serial.println("*");
-
-            
+        if ((TipoIF == 4) && (count == XRayTime + 20)) Serial.println("*");
       }
       // if ((TipoIF == 3) && (count > (XRayTime + 10))) digitalWrite (T1, HIGH);
       if (count == 5) AEC_Analod_Read = analogRead(AEC_Analog);     // Lee el Valor de AEC durante el Pulso
