@@ -19,7 +19,7 @@
 #include "Functions.h"
 
 // Opcionales de la Interface
-#define OLED          // Con Display OLED
+// #define OLED          // Con Display OLED
 #define ROTA          // Con control de Rotacion de Imagen por botones
 #define MAGNY         // Con control de Magnificacion por botones (Panel Plano)
 
@@ -210,6 +210,10 @@ void Xray(void){
       
       if (count > XRayTime ) {
         digitalWrite (XRay, LOW);  // Pulso X-Ray Off
+        // Inform by Serial port to SerialSplitter X-Ray done without stop interupt
+        if (TipoIF == 4) Serial.println("*");
+
+            
       }
       // if ((TipoIF == 3) && (count > (XRayTime + 10))) digitalWrite (T1, HIGH);
       if (count == 5) AEC_Analod_Read = analogRead(AEC_Analog);     // Lee el Valor de AEC durante el Pulso
@@ -423,6 +427,7 @@ void loop() {
       if (Signo == "I") WriteEEPROM(4, 1);             // Integris 3000 el pulso de Rayos X es externo
       if (Signo == "N") WriteEEPROM(4, 0);             // Interface Normal Meditech
       if (Signo == "B") WriteEEPROM(4, 3);             // Interface BH 5000
+      if (Signo == "A") WriteEEPROM(4, 4);             // Interface Aspor
       delay(50);
       WriteEEPROM(0, 120);
       delay(50);
@@ -715,7 +720,7 @@ void loop() {
         u8x8.clearLine(1);
         u8x8.draw1x2String(0,0,"FluoroOff");
         #endif
-        PulsoExtra(); 
+        if (TipoIF != 4) PulsoExtra(); 
         InterDelay = InterDelayDefault;
       }else {
         if (buttonStateCI){
@@ -757,7 +762,7 @@ void loop() {
         u8x8.clearLine(1);
         u8x8.draw1x2String(0,0,"CineOff");
         #endif
-        PulsoExtra();
+        if (TipoIF != 4) PulsoExtra();
         InterDelay = InterDelayDefault;
       }else {
         if (buttonStateSC){
