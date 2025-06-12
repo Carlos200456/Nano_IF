@@ -86,7 +86,7 @@ unsigned char AEC_Lock_Qy = 0;
 bool Pulse_State = false;
 bool Last_Pulse_State = false;
 bool debugbool = false;
-
+bool No_Paso = false; // Variable to control the AEC Lock in Aspor Interface
 
 char SCin = 0;
 char CIin = 0;
@@ -345,6 +345,7 @@ void loop() {
         } else {
           AEC_Lock = true;
           AEC_Lock_Qy = (unsigned char)Magnitud.toInt();
+          No_Paso = true; // Variable to control the AEC Lock in Aspor Interface
         }
       }
       goto jmp;
@@ -647,6 +648,10 @@ void loop() {
 
   if (AEC_Lock && (AEC_Lock_Qy == 0)){
     outputAEC = AEC_Lock_Volt;
+    if (No_Paso && (TipoIF == 4)) { // No_Paso is used to control the AEC Lock in Aspor Interface
+      No_Paso = false; // Reset No_Paso after the first AEC Lock
+      Serial.println("AEC_Locked");
+    }
     #ifdef OLED
       u8x8.drawString(14, 0, "L"); 
     #endif
@@ -718,7 +723,7 @@ void loop() {
         u8x8.clearLine(1);
         u8x8.draw1x2String(0,0,"FluoroOff");
         #endif
-        if (TipoIF != 4) PulsoExtra(); 
+        PulsoExtra(); 
         InterDelay = InterDelayDefault;
       }else {
         if (buttonStateCI){
@@ -760,7 +765,7 @@ void loop() {
         u8x8.clearLine(1);
         u8x8.draw1x2String(0,0,"CineOff");
         #endif
-        if (TipoIF != 4) PulsoExtra();
+        PulsoExtra();
         InterDelay = InterDelayDefault;
       }else {
         if (buttonStateSC){
@@ -913,9 +918,11 @@ void WriteEEPROM(int i, int Data){
 
 void PulsoExtra(){
   XRayOn = false;
-  delay (XRayPeriod - XRayTime);
-  digitalWrite (XRay, HIGH);
-  delay (XRayTime);
+  if (TipoIF != 4) {
+    delay (XRayPeriod - XRayTime);
+    digitalWrite (XRay, HIGH);
+    delay (XRayTime);
+  }
   digitalWrite (XRay, LOW);
   if (TipoIF == 3) digitalWrite (T1, HIGH);
 }
