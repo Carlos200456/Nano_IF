@@ -40,10 +40,10 @@ Version 2.198
 Eliminacion de activacion de Iris durane las comunicaciones.
 
 Version 2.202
-Agregado de Opción para equipo Toshiba "T0", "T1" son Kv Dw, Kv Up.
+Agregado de Opciï¿½n para equipo Toshiba "T0", "T1" son Kv Dw, Kv Up.
 
 Version 2.203
-Agregado de Opción para equipo Toshiba "FocoFino" es el Boton KV Manual de la Consola.
+Agregado de Opciï¿½n para equipo Toshiba "FocoFino" es el Boton KV Manual de la Consola.
 Se activa cuando viene Cine solamente si esta apagado. Detecta el encendido por "PulseIn"
 
 Version 2.204
@@ -67,3 +67,6 @@ Bug Fix (Enable primero y despues pulsos de Rayos X)
 Version 4.Git
 Control Completo de Optimus CP en Integris BH-5000 incluyendo:
 AEC, Pulsos Adaptacion y Retardos entre pedales.
+
+Version 4.Git
+Con * de Fin de Pulso x-Ray para Aspor - Serial SerialSplitter
